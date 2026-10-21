@@ -39,6 +39,8 @@ export function normalizar(json, agora = new Date()) {
         tipo,
         titulo: p.titulo,
         chamada: p.chamada ?? "",
+        subtitulo: p.subtitulo ?? "",
+        editoria: p.editoria ?? "",
         data: p.data ?? "",
         capa: p.capa ?? null,
         url: p.url,
@@ -46,6 +48,7 @@ export function normalizar(json, agora = new Date()) {
         destaque: Boolean(p.destaque),
         edital: tipo === "concurso" ? p.concurso?.edital ?? null : null,
         prazo: tipo === "concurso" ? prazo(p.concurso, agora) : null,
+        ficha: tipo === "concurso" ? p.concurso ?? null : null,
       };
     })
     // edital encerrado sai da página (mesma regra da bio: só o que está no ar)
@@ -62,6 +65,7 @@ export function normalizar(json, agora = new Date()) {
     perfil: json?.perfil ?? {},
     atualizado: json?.atualizado_em ?? null,
     destaques: pubs.filter((p) => p.destaque),
+    todas: pubs,
     grupos,
   };
 }

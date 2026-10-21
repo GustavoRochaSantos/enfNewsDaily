@@ -1,6 +1,7 @@
 # Página de links (linktree) do EnfNews
 
-Página em React (Vite) no estilo Linktree. Lê o `links.json` da raiz do repositório
+Página em React (Vite). No celular (até 959px) é uma página de links no estilo Linktree
+(`src/Links.jsx`); no computador vira a landing do EnfNews (`src/Web.jsx`, `src/web.css`). Lê o `links.json` da raiz do repositório
 (formato em `../LINKS.md`) direto do raw.githubusercontent, então um post novo aparece
 sozinho, sem novo deploy.
 
