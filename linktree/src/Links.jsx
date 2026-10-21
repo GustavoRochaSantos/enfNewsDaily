@@ -1,8 +1,12 @@
 import { TIPOS } from "./dados.js";
 import { Cartao, dataCurta } from "./Cartao.jsx";
+import { useOnda, useRevelar } from "./animacoes.js";
 
 // Celular: página de links enxuta, para quem chega pela bio do Instagram
 export default function Links({ dados, erro, perfil }) {
+  useOnda();
+  useRevelar(dados);
+
   return (
     <main className="pagina">
       <header>
@@ -10,7 +14,7 @@ export default function Links({ dados, erro, perfil }) {
         <h1>{perfil.nome ?? "EnfNews"}</h1>
         <p>Enfermagem em dia: revisão técnica, questões e editais.</p>
         {perfil.instagram && (
-          <a className="perfil" href={perfil.instagram} target="_blank" rel="noopener">
+          <a className="perfil" data-onda href={perfil.instagram} target="_blank" rel="noopener">
             Seguir no Instagram
           </a>
         )}

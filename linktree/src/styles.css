@@ -71,3 +71,45 @@ h2 {
 
 .aviso { text-align: center; color: var(--suave); padding: 24px 0; }
 footer { text-align: center; font-size: 12px; color: var(--suave); opacity: .8; margin-top: 26px; line-height: 1.6; }
+
+/* ---------- movimento (celular e computador) ---------- */
+html { scroll-behavior: smooth; }
+
+/* entrada ao rolar: o JS põe .visivel quando o elemento aparece */
+[data-revelar] {
+  opacity: 0; translate: 0 18px;
+  transition: opacity .6s ease calc(var(--i, 0) * 70ms), translate .6s cubic-bezier(.2, .7, .2, 1) calc(var(--i, 0) * 70ms),
+    transform .3s cubic-bezier(.2, .7, .2, 1), box-shadow .3s ease, border-color .3s ease, background .3s ease;
+}
+[data-revelar].visivel { opacity: 1; translate: none; }
+
+/* onda a partir do ponto do clique */
+[data-onda] { position: relative; overflow: hidden; isolation: isolate; }
+.onda {
+  position: absolute; border-radius: 50%; pointer-events: none; z-index: -1;
+  background: currentColor; opacity: .18; transform: scale(0);
+  animation: onda .55s ease-out forwards;
+}
+@keyframes onda { to { transform: scale(1); opacity: 0; } }
+
+/* celular: cabeçalho entra em sequência, cartão afunda ao tocar */
+.pagina header > * { animation: subir .6s cubic-bezier(.2, .7, .2, 1) backwards; }
+.pagina header > :nth-child(2) { animation-delay: .08s; }
+.pagina header > :nth-child(3) { animation-delay: .16s; }
+.pagina header > :nth-child(4) { animation-delay: .24s; }
+.avatar { transition: transform .3s ease; }
+.avatar:hover { transform: rotate(-6deg) scale(1.04); }
+.cartao:active { transform: scale(.98); }
+.perfil { transition: transform .15s ease, background .15s ease; }
+.perfil:hover { background: #DDB95E; transform: translateY(-1px); }
+.perfil:active { transform: scale(.96); }
+.seta { transition: transform .2s ease; }
+.cartao:hover .seta { transform: translate(3px, -3px); }
+
+@keyframes subir { from { opacity: 0; transform: translateY(16px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  [data-revelar] { opacity: 1; translate: none; }
+}

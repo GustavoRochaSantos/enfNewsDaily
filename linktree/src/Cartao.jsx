@@ -9,8 +9,8 @@ export function dataCurta(iso) {
 export function Cartao({ pub, selo }) {
   const { cor } = TIPOS[pub.tipo];
   return (
-    <article className="cartao" style={{ "--tipo": cor }}>
-      <a className="principal" href={pub.url} target="_blank" rel="noopener" onClick={() => registrarClique(pub.id)}>
+    <article className="cartao" data-revelar style={{ "--tipo": cor }}>
+      <a className="principal" data-onda href={pub.url} target="_blank" rel="noopener" onClick={() => registrarClique(pub.id)}>
         {pub.capa && <img className="capa" src={pub.capa} alt="" loading="lazy" onError={(e) => e.currentTarget.remove()} />}
         <span className="texto">
           <span className="meta">

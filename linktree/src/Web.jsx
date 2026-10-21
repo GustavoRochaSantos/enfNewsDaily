@@ -1,5 +1,6 @@
 import { registrarClique } from "./cliques.js";
 import { dataCurta } from "./Cartao.jsx";
+import { useOnda, useRevelar, useRolou, useSecaoAtiva } from "./animacoes.js";
 import "./web.css";
 
 // Computador: landing do EnfNews, com vitrine das capas e os editais em destaque
@@ -10,9 +11,9 @@ const PILARES = [
   { n: "03", titulo: "Editais abertos", texto: "Vagas de técnico e enfermeiro, sempre com o link da banca ou do órgão." },
 ];
 
-function Capa({ pub }) {
+function Capa({ pub, i }) {
   return (
-    <a className="w-capa" href={pub.url} target="_blank" rel="noopener" onClick={() => registrarClique(pub.id)}>
+    <a className="w-capa" data-revelar style={{ "--i": i % 4 }} href={pub.url} target="_blank" rel="noopener" onClick={() => registrarClique(pub.id)}>
       <span className="w-capa-img">
         {pub.capa && <img src={pub.capa} alt="" loading="lazy" onError={(e) => e.currentTarget.remove()} />}
       </span>
@@ -25,11 +26,11 @@ function Capa({ pub }) {
   );
 }
 
-function Edital({ pub }) {
+function Edital({ pub, i }) {
   const f = pub.ficha ?? {};
   const local = [f.orgao, f.uf].filter(Boolean).join(" · ");
   return (
-    <article className="w-edital">
+    <article className="w-edital" data-revelar style={{ "--i": i }}>
       {pub.capa && <img className="w-edital-capa" src={pub.capa} alt="" loading="lazy" onError={(e) => e.currentTarget.remove()} />}
       <div className="w-edital-corpo">
         {pub.prazo?.texto && <span className={pub.prazo.urgente ? "w-prazo urgente" : "w-prazo"}>{pub.prazo.texto}</span>}
@@ -42,7 +43,7 @@ function Edital({ pub }) {
         </dl>
         <div className="w-acoes">
           {pub.edital && (
-            <a className="w-botao" href={pub.edital} target="_blank" rel="noopener" onClick={() => registrarClique(pub.id)}>
+            <a className="w-botao" data-onda href={pub.edital} target="_blank" rel="noopener" onClick={() => registrarClique(pub.id)}>
               Edital oficial ↗
             </a>
           )}
@@ -61,20 +62,27 @@ export default function Web({ dados, erro, perfil, arroba }) {
   const posts = todas.filter((p) => p.tipo === "post");
   const questoes = todas.filter((p) => p.tipo === "quiz");
   const vitrine = todas.filter((p) => p.capa && p.tipo !== "concurso").slice(0, 3);
+  const secoes = [editais.length && "editais", posts.length && "posts", questoes.length && "questoes"].filter(Boolean);
+
+  useOnda();
+  useRevelar(dados);
+  const rolou = useRolou();
+  const ativa = useSecaoAtiva(secoes, dados);
+  const menu = (id) => (ativa === id ? "ativo" : undefined);
 
   return (
     <div className="web">
-      <nav className="w-nav">
+      <nav className={rolou ? "w-nav rolou" : "w-nav"}>
         <a className="w-marca" href="#topo">
           <img src={perfil.avatar ?? "./avatar.png"} alt="" />
           <span>{perfil.nome ?? "EnfNews"}</span>
         </a>
         <span className="w-menu">
-          {editais.length > 0 && <a href="#editais">Editais</a>}
-          {posts.length > 0 && <a href="#posts">Posts</a>}
-          {questoes.length > 0 && <a href="#questoes">Questões</a>}
+          {editais.length > 0 && <a href="#editais" className={menu("editais")}>Editais</a>}
+          {posts.length > 0 && <a href="#posts" className={menu("posts")}>Posts</a>}
+          {questoes.length > 0 && <a href="#questoes" className={menu("questoes")}>Questões</a>}
           {perfil.instagram && (
-            <a className="w-botao pequeno" href={perfil.instagram} target="_blank" rel="noopener">
+            <a className="w-botao pequeno" data-onda href={perfil.instagram} target="_blank" rel="noopener">
               Seguir {arroba ? `@${arroba}` : "no Instagram"}
             </a>
           )}
@@ -92,12 +100,12 @@ export default function Web({ dados, erro, perfil, arroba }) {
           </p>
           <div className="w-acoes">
             {perfil.instagram && (
-              <a className="w-botao" href={perfil.instagram} target="_blank" rel="noopener">Seguir no Instagram</a>
+              <a className="w-botao" data-onda href={perfil.instagram} target="_blank" rel="noopener">Seguir no Instagram</a>
             )}
-            {editais.length > 0 && <a className="w-botao contorno" href="#editais">Ver editais abertos</a>}
+            {editais.length > 0 && <a className="w-botao contorno" data-onda href="#editais">Ver editais abertos</a>}
           </div>
         </div>
-        <div className="w-leque" aria-hidden="true">
+        <div className={vitrine.length ? "w-leque pronto" : "w-leque"} aria-hidden="true">
           {vitrine.map((p, i) => (
             <img key={p.id} className={`w-leque-${i}`} src={p.capa} alt="" />
           ))}
@@ -105,8 +113,8 @@ export default function Web({ dados, erro, perfil, arroba }) {
       </header>
 
       <section className="w-pilares">
-        {PILARES.map((p) => (
-          <div key={p.n}>
+        {PILARES.map((p, i) => (
+          <div key={p.n} data-revelar style={{ "--i": i }}>
             <span className="w-num">{p.n}</span>
             <h3>{p.titulo}</h3>
             <p>{p.texto}</p>
@@ -118,36 +126,36 @@ export default function Web({ dados, erro, perfil, arroba }) {
 
       {editais.length > 0 && (
         <section className="w-secao" id="editais">
-          <div className="w-titulo-secao">
+          <div className="w-titulo-secao" data-revelar>
             <h2>Editais abertos</h2>
             <p>Só o que está com inscrição aberta, sempre com o link oficial.</p>
           </div>
           <div className="w-editais">
-            {editais.map((p) => <Edital key={p.id} pub={p} />)}
+            {editais.map((p, i) => <Edital key={p.id} pub={p} i={i} />)}
           </div>
         </section>
       )}
 
       {posts.length > 0 && (
         <section className="w-secao" id="posts">
-          <div className="w-titulo-secao">
+          <div className="w-titulo-secao" data-revelar>
             <h2>Últimos posts</h2>
             <p>Clique na capa para abrir o carrossel no Instagram.</p>
           </div>
           <div className="w-grade">
-            {posts.map((p) => <Capa key={p.id} pub={p} />)}
+            {posts.map((p, i) => <Capa key={p.id} pub={p} i={i} />)}
           </div>
         </section>
       )}
 
       {questoes.length > 0 && (
         <section className="w-secao" id="questoes">
-          <div className="w-titulo-secao">
+          <div className="w-titulo-secao" data-revelar>
             <h2>Questões de concurso</h2>
             <p>Teste o que você sabe antes de ver o gabarito.</p>
           </div>
           <div className="w-grade">
-            {questoes.map((p) => <Capa key={p.id} pub={p} />)}
+            {questoes.map((p, i) => <Capa key={p.id} pub={p} i={i} />)}
           </div>
         </section>
       )}
