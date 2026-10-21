@@ -1,12 +1,28 @@
 {
   "versao": 1,
-  "atualizado_em": "2026-10-21T13:20:51-03:00",
+  "atualizado_em": "2026-10-21T20:54:40-03:00",
   "perfil": {
     "nome": "EnfNews",
     "instagram": "https://www.instagram.com/enf.news.daily/",
     "avatar": null
   },
   "publicacoes": [
+    {
+      "id": "2026-10-21-qua-questao-lpp-prevencao-ufpa",
+      "tipo": "quiz",
+      "titulo": "Lesão por pressão: qual acerta?",
+      "subtitulo": "CEPS‑UFPA · Residência Multiprofissional UFPA · 2025 · Enfermagem",
+      "chamada": "Questão de concurso",
+      "editoria": "Feridas",
+      "data": "2026-10-21",
+      "capa": "https://raw.githubusercontent.com/GustavoRochaSantos/enfNewsDaily/main/posts/2026-10-21-qua-questao-lpp-prevencao-ufpa/01.jpg",
+      "instagram": "https://www.instagram.com/p/DexnAZdEbFI/",
+      "reel": null,
+      "url": "https://www.instagram.com/p/DexnAZdEbFI/",
+      "destaque": false,
+      "ativo": true,
+      "clicks": 0
+    },
     {
       "id": "2026-10-21-qua-lesao-por-pressao-estagios",
       "tipo": "post",
