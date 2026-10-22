@@ -1,12 +1,28 @@
 {
   "versao": 1,
-  "atualizado_em": "2026-10-22T07:37:45-03:00",
+  "atualizado_em": "2026-10-22T15:03:39-03:00",
   "perfil": {
     "nome": "EnfNews",
     "instagram": "https://www.instagram.com/enf.news.daily/",
     "avatar": null
   },
   "publicacoes": [
+    {
+      "id": "2026-10-22-qui-rcp-adulto",
+      "tipo": "post",
+      "titulo": "RCP no adulto: o essencial",
+      "subtitulo": "O que a AHA 2025 e o protocolo do SAMU 192 São Paulo (2026) dizem sobre a sequência do atendimento e a qualidade das compressões.",
+      "chamada": "Quinta de urgência",
+      "editoria": "Urgência e Emergência",
+      "data": "2026-10-22",
+      "capa": "https://raw.githubusercontent.com/GustavoRochaSantos/enfNewsDaily/main/posts/2026-10-22-qui-rcp-adulto/01.jpg",
+      "instagram": "https://www.instagram.com/p/DezlRrwHQO-/",
+      "reel": null,
+      "url": "https://www.instagram.com/p/DezlRrwHQO-/",
+      "destaque": false,
+      "ativo": true,
+      "clicks": 0
+    },
     {
       "id": "2026-10-22-qui-edital-sao-joao-do-piaui-pi",
       "tipo": "concurso",
