@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "atualizado_em": "2026-10-22T15:03:39-03:00",
+  "atualizado_em": "2026-10-22T15:05:04-03:00",
   "perfil": {
     "nome": "EnfNews",
     "instagram": "https://www.instagram.com/enf.news.daily/",
@@ -133,6 +133,22 @@
       "instagram": "https://www.instagram.com/p/Det-zCgFOio/",
       "reel": null,
       "url": "https://www.instagram.com/p/Det-zCgFOio/",
+      "destaque": false,
+      "ativo": true,
+      "clicks": 0
+    },
+    {
+      "id": "2026-10-19-seg-questao-gotejamento-ufopa",
+      "tipo": "quiz",
+      "titulo": "Quantas gotas por minuto?",
+      "subtitulo": "CEPS‑UFPA · UFOPA · 2025 · Técnico em Enfermagem",
+      "chamada": "Questão de concurso",
+      "editoria": "Farmacologia",
+      "data": "2026-10-19",
+      "capa": "https://raw.githubusercontent.com/GustavoRochaSantos/enfNewsDaily/main/posts/2026-10-19-seg-questao-gotejamento-ufopa/01.jpg",
+      "instagram": "https://www.instagram.com/p/Dezlbh_nVpS/",
+      "reel": null,
+      "url": "https://www.instagram.com/p/Dezlbh_nVpS/",
       "destaque": false,
       "ativo": true,
       "clicks": 0
