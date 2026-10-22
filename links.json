@@ -1,12 +1,37 @@
 {
   "versao": 1,
-  "atualizado_em": "2026-10-21T20:54:40-03:00",
+  "atualizado_em": "2026-10-22T07:37:45-03:00",
   "perfil": {
     "nome": "EnfNews",
     "instagram": "https://www.instagram.com/enf.news.daily/",
     "avatar": null
   },
   "publicacoes": [
+    {
+      "id": "2026-10-22-qui-edital-sao-joao-do-piaui-pi",
+      "tipo": "concurso",
+      "titulo": "São João (PI): 37 vagas",
+      "subtitulo": "22 para técnico de enfermagem e 15 para enfermeiro, com plantões na maternidade e no SAMU. Inscrições até 09/11.",
+      "chamada": "Edital novo · São João do Piauí (PI)",
+      "editoria": "Concursos",
+      "data": "2026-10-22",
+      "capa": "https://raw.githubusercontent.com/GustavoRochaSantos/enfNewsDaily/main/posts/2026-10-22-qui-edital-sao-joao-do-piaui-pi/01.jpg",
+      "instagram": "https://www.instagram.com/p/DeyyPHTEWly/",
+      "reel": null,
+      "url": "https://www.instagram.com/p/DeyyPHTEWly/",
+      "destaque": false,
+      "ativo": true,
+      "clicks": 0,
+      "concurso": {
+        "edital": "https://saojoaodopiaui.pi.gov.br/processos-seletivos-ns-3-e-4-2026-para-preenchimento-de-vagas-e-cadastro-de-reserva/",
+        "edital_rotulo": "Página oficial da Prefeitura de São João do Piauí: edital nº 003/2026 e cronograma",
+        "inscricoes_ate": "2026-11-09T23:59:00-03:00",
+        "orgao": "Pref. São João do Piauí",
+        "uf": "PI",
+        "banca": "Instituto CONSULPAM",
+        "vagas": "37"
+      }
+    },
     {
       "id": "2026-10-21-qua-questao-lpp-prevencao-ufpa",
       "tipo": "quiz",
