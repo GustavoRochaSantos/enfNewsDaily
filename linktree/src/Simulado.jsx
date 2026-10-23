@@ -292,11 +292,7 @@ function Resultado({ prova, banco, onNovo }) {
               </p>
               {q.explicacao && <p>{semGabarito(q.explicacao)}</p>}
             </div>
-            <p className="s-fonte">
-              {rotuloFonte(q)} ·{" "}
-              <a href={q.fonte.prova_url} target="_blank" rel="noopener">prova</a>
-              {q.fonte.gabarito_url && <> · <a href={q.fonte.gabarito_url} target="_blank" rel="noopener">gabarito definitivo</a></>}
-            </p>
+            <p className="s-fonte">{rotuloFonte(q)}</p>
           </article>
         );
       })}
