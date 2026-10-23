@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CARGOS, NIVEIS, ROTULO_NIVEL, assuntos, carregarBanco, cotas, rotuloFonte, sortearProva } from "./banco.js";
 import "./simulado.css";
 
@@ -162,9 +162,110 @@ function Apresentacao({ banco, onComecar }) {
   );
 }
 
-function Questao({ q, n, total, marcada, onMarcar }) {
+function movimentoReduzido() {
+  try {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  } catch {
+    return false;
+  }
+}
+
+// Conta de 0 até o alvo em `ms` milissegundos (direto no alvo se o movimento for reduzido)
+function useContagem(alvo, ms) {
+  const [valor, setValor] = useState(() => (movimentoReduzido() ? alvo : 0));
+  useEffect(() => {
+    if (movimentoReduzido()) return setValor(alvo);
+    let quadro;
+    const comeco = performance.now();
+    const passo = (t) => {
+      const p = Math.min(1, (t - comeco) / ms);
+      setValor(Math.round(alvo * (1 - (1 - p) ** 3)));
+      if (p < 1) quadro = requestAnimationFrame(passo);
+    };
+    quadro = requestAnimationFrame(passo);
+    return () => cancelAnimationFrame(quadro);
+  }, [alvo, ms]);
+  return valor;
+}
+
+// Tela de passagem antes da prova e antes do resultado: as etapas acendem uma a uma,
+// a barra enche e, no fim, chama onFim.
+function Passagem({ tipo, kicker, titulo, pronto, etapas, children, onFim }) {
+  const reduzido = movimentoReduzido();
+  const [feitas, setFeitas] = useState(0);
+  const terminou = feitas >= etapas.length;
+  useEffect(() => {
+    const t = setTimeout(
+      () => (terminou ? onFim() : setFeitas((f) => f + 1)),
+      terminou ? (reduzido ? 400 : 1100) : reduzido ? 300 : 800
+    );
+    return () => clearTimeout(t);
+  }, [feitas]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
-    <article className="s-questao">
+    <section className={`s-passagem ${tipo}`} role="status" aria-live="polite">
+      <div className="s-folhas" aria-hidden="true">
+        <span /><span /><span>
+          <i /><i /><i />
+        </span>
+      </div>
+      <p className="s-kicker">{kicker}</p>
+      <h1 key={terminou ? "pronto" : "titulo"}>{terminou ? pronto : titulo}</h1>
+      {children}
+      <ol className="s-etapas">
+        {etapas.map((e, i) => (
+          <li key={e} className={i < feitas ? "feita" : i === feitas ? "atual" : undefined}>{e}</li>
+        ))}
+      </ol>
+      <div className="s-progresso"><span style={{ width: `${(feitas / etapas.length) * 100}%` }} /></div>
+    </section>
+  );
+}
+
+function Montando({ prova, onFim }) {
+  const { real, filtros, questoes } = prova;
+  const quem = filtros.cargo ? CARGOS[filtros.cargo] : "Enfermeiro e Técnico";
+  const etapas = [
+    `Separando questões de ${quem}${filtros.assunto ? ` sobre ${filtros.assunto}` : ""}`,
+    `Sorteando ${real.facil} fáceis, ${real.medio} médias e ${real.dificil} difíceis`,
+    `Misturando a ordem das ${questoes.length} questões`,
+    "Acertando o relógio",
+  ];
+  return (
+    <Passagem tipo="montar" kicker="Simulado" titulo="Montando sua prova" pronto="Tudo pronto. Boa prova!" etapas={etapas} onFim={onFim}>
+      <p className="s-lead">Enquanto isso, ajeite-se, respire fundo e deixe papel e caneta por perto.</p>
+    </Passagem>
+  );
+}
+
+function Corrigindo({ prova, onFim }) {
+  const { questoes, respostas } = prova;
+  const acertos = questoes.filter((q) => respostas[q.id] === q.gabarito).length;
+  const branco = questoes.filter((q) => !respostas[q.id]).length;
+  const erros = questoes.length - acertos - branco;
+  const ms = movimentoReduzido() ? 0 : 3000;
+  const a = useContagem(acertos, ms);
+  const e = useContagem(erros, ms);
+  const etapas = [
+    "Conferindo suas respostas com o gabarito definitivo",
+    "Contando acertos e erros",
+    "Separando o resultado por dificuldade",
+    "Preparando a correção comentada",
+  ];
+  return (
+    <Passagem tipo="corrigir" kicker="Correção" titulo="Corrigindo sua prova" pronto="Correção pronta!" etapas={etapas} onFim={onFim}>
+      <div className="s-contagem">
+        <div className="certo"><b>{a}</b><span>acertos</span></div>
+        <div className="errado"><b>{e}</b><span>erros</span></div>
+        {branco > 0 && <div><b>{branco}</b><span>em branco</span></div>}
+      </div>
+    </Passagem>
+  );
+}
+
+function Questao({ q, n, total, marcada, onMarcar, entrada }) {
+  return (
+    <article className={`s-questao ${entrada ?? ""}`}>
       <header>
         <span className="s-num">Questão {n} de {total}</span>
         <span className="s-assunto">{q.assunto}</span>
@@ -194,6 +295,13 @@ function Prova({ prova, setProva, onEntregar, onSair }) {
     return () => clearInterval(t);
   }, []);
   const q = questoes[atual];
+  // Direção da troca: avançar entra pela direita, voltar entra pela esquerda
+  const anterior = useRef(atual);
+  const entrada = useRef("entra");
+  if (atual !== anterior.current) {
+    entrada.current = atual > anterior.current ? "entra-dir" : "entra-esq";
+    anterior.current = atual;
+  }
   const respondidas = Object.keys(respostas).length;
   const ir = (i) => setProva({ ...prova, atual: i });
   const marcar = (letra) => setProva({ ...prova, respostas: { ...respostas, [q.id]: letra } });
@@ -216,7 +324,7 @@ function Prova({ prova, setProva, onEntregar, onSair }) {
         <button className="s-botao pequeno" onClick={entregar}>Entregar</button>
       </div>
       {prova.aviso && <p className="s-aviso">{prova.aviso}</p>}
-      <Questao q={q} n={atual + 1} total={questoes.length} marcada={respostas[q.id]} onMarcar={marcar} />
+      <Questao key={q.id} entrada={entrada.current} q={q} n={atual + 1} total={questoes.length} marcada={respostas[q.id]} onMarcar={marcar} />
       <div className="s-navegar">
         <button className="s-botao contorno" disabled={atual === 0} onClick={() => ir(atual - 1)}>← Anterior</button>
         {atual < questoes.length - 1
@@ -306,6 +414,9 @@ export default function Simulado({ perfil }) {
   // A prova (respostas e, depois de entregue, o resultado) fica salva neste aparelho
   // até a pessoa começar outra: recarregar ou fechar a aba não perde nada.
   const [prova, setProvaEstado] = useState(() => lerGuardado()?.questoes ? lerGuardado() : null);
+  // Telas de passagem: só existem na hora (recarregar a página pula direto para a prova ou o resultado)
+  const [montando, setMontando] = useState(null);
+  const [corrigindo, setCorrigindo] = useState(false);
 
   useEffect(() => {
     carregarBanco().then(setBanco).catch(setErro);
@@ -315,27 +426,30 @@ export default function Simulado({ perfil }) {
     setProvaEstado(p);
     guardar(p);
   };
-  useEffect(() => { window.scrollTo({ top: 0 }); }, [prova?.atual, prova?.fim]);
+  useEffect(() => { window.scrollTo({ top: 0 }); }, [prova?.atual, prova?.fim, montando, corrigindo]);
 
-  const comecar = (filtros) => {
-    const s = sortearProva(banco, filtros);
-    setProva({ ...s, filtros, respostas: {}, atual: 0, inicio: Date.now() });
+  const comecar = (filtros) => setMontando({ ...sortearProva(banco, filtros), filtros, respostas: {}, atual: 0 });
+  const entregar = () => {
+    setCorrigindo(true);
+    setProva({ ...prova, fim: Date.now() });
   };
 
   return (
     <div className="sim">
       <Topo perfil={perfil} />
       <main className="s-corpo">
-        {!prova && erro && <p className="s-aviso">Não foi possível carregar o banco de questões agora. Tente de novo em instantes.</p>}
+        {!prova && !montando && erro && <p className="s-aviso">Não foi possível carregar o banco de questões agora. Tente de novo em instantes.</p>}
         {!prova && !banco && !erro && <p className="s-aviso">Carregando questões…</p>}
-        {!prova && banco && (
+        {montando && <Montando prova={montando} onFim={() => { setProva({ ...montando, inicio: Date.now() }); setMontando(null); }} />}
+        {!prova && !montando && banco && (
           <Apresentacao
             banco={banco}
             onComecar={comecar}
           />
         )}
-        {prova && !prova.fim && <Prova prova={prova} setProva={setProva} onEntregar={() => setProva({ ...prova, fim: Date.now() })} onSair={() => setProva(null)} />}
-        {prova?.fim && <Resultado prova={prova} banco={banco} onNovo={() => setProva(null)} />}
+        {prova && !prova.fim && <Prova prova={prova} setProva={setProva} onEntregar={entregar} onSair={() => setProva(null)} />}
+        {prova?.fim && corrigindo && <Corrigindo prova={prova} onFim={() => setCorrigindo(false)} />}
+        {prova?.fim && !corrigindo && <Resultado prova={prova} banco={banco} onNovo={() => setProva(null)} />}
       </main>
       <footer className="s-rodape">
         Questões de provas oficiais, com banca, órgão, ano e número indicados. Gabarito definitivo divulgado pela banca.
