@@ -244,7 +244,7 @@ export default function Simulado({ perfil }) {
     setProvaEstado(p);
     guardar(p && !p.fim ? p : null);
   };
-  useEffect(() => window.scrollTo({ top: 0 }), [prova?.atual, prova?.fim]);
+  useEffect(() => { window.scrollTo({ top: 0 }); }, [prova?.atual, prova?.fim]);
 
   const comecar = (filtros) => {
     const s = sortearProva(banco, filtros);
