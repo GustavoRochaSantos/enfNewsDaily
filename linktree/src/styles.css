@@ -69,6 +69,9 @@ h2 {
   background: var(--ouro); color: var(--noite); font-weight: 700; font-size: 14px; text-decoration: none;
 }
 
+.perfil.contorno { background: transparent; color: var(--papel); border: 2px solid rgba(255, 255, 255, .35); margin-left: 6px; padding: 6px 16px; }
+.perfil.contorno:hover { background: transparent; border-color: var(--ouro); }
+
 .aviso { text-align: center; color: var(--suave); padding: 24px 0; }
 footer { text-align: center; font-size: 12px; color: var(--suave); opacity: .8; margin-top: 26px; line-height: 1.6; }
 

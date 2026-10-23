@@ -18,6 +18,7 @@ export default function Links({ dados, erro, perfil }) {
             Seguir no Instagram
           </a>
         )}
+        <a className="perfil contorno" data-onda href="/simulado">Fazer um simulado</a>
       </header>
 
       {!dados && !erro && <p className="aviso">Carregando…</p>}

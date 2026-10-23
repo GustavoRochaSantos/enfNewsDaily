@@ -7,7 +7,7 @@ import "./web.css";
 
 const PILARES = [
   { n: "01", titulo: "Post do dia", texto: "Um tema técnico por dia, em carrossel, com a fonte oficial citada no fim." },
-  { n: "02", titulo: "Questão de concurso", texto: "Questões de provas reais de enfermagem, com a alternativa certa explicada." },
+  { n: "02", titulo: "Questão de concurso", texto: "Questões de provas reais de enfermagem e um simulado com gabarito definitivo e a fonte de cada questão." },
   { n: "03", titulo: "Editais abertos", texto: "Vagas de técnico e enfermeiro, sempre com o link da banca ou do órgão." },
 ];
 
@@ -81,6 +81,7 @@ export default function Web({ dados, erro, perfil, arroba }) {
           {editais.length > 0 && <a href="#editais" className={menu("editais")}>Editais</a>}
           {posts.length > 0 && <a href="#posts" className={menu("posts")}>Posts</a>}
           {questoes.length > 0 && <a href="#questoes" className={menu("questoes")}>Questões</a>}
+          <a href="/simulado">Simulado</a>
           {perfil.instagram && (
             <a className="w-botao pequeno" data-onda href={perfil.instagram} target="_blank" rel="noopener">
               Seguir {arroba ? `@${arroba}` : "no Instagram"}
@@ -103,6 +104,7 @@ export default function Web({ dados, erro, perfil, arroba }) {
               <a className="w-botao" data-onda href={perfil.instagram} target="_blank" rel="noopener">Seguir no Instagram</a>
             )}
             {editais.length > 0 && <a className="w-botao contorno" data-onda href="#editais">Ver editais abertos</a>}
+            <a className="w-botao contorno" data-onda href="/simulado">Fazer um simulado</a>
           </div>
         </div>
         <div className={vitrine.length ? "w-leque pronto" : "w-leque"} aria-hidden="true">

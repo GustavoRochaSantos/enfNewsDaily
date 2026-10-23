@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { carregar } from "./dados.js";
 import Links from "./Links.jsx";
+import Simulado from "./Simulado.jsx";
 import Web from "./Web.jsx";
 
 const TELA_GRANDE = "(min-width: 960px)";
@@ -30,5 +31,6 @@ export default function App() {
   const arroba = perfil.instagram?.match(/instagram\.com\/([^/?#]+)/)?.[1];
   const props = { ...estado, perfil, arroba };
 
+  if (window.location.pathname.replace(/\/+$/, "") === "/simulado") return <Simulado {...props} />;
   return grande ? <Web {...props} /> : <Links {...props} />;
 }
