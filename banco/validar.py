@@ -8,7 +8,7 @@ ARQ = Path(__file__).with_name("questoes.json")
 NIVEIS = {"facil": (0, 1), "medio": (2, 3), "dificil": (4, 6)}
 CARGOS = {"enfermeiro", "tecnico"}
 OBRIG = ["id", "banca", "orgao", "concurso", "ano", "cargo", "numero", "assunto", "enunciado",
-         "alternativas", "gabarito", "dificuldade", "criterios", "motivo_dificuldade", "fonte"]
+         "alternativas", "gabarito", "dificuldade", "criterios", "motivo_dificuldade", "explicacao", "fonte"]
 
 
 def main():
@@ -46,6 +46,11 @@ def main():
             erros.append(f"{onde}: fonte.prova_url ausente")
         if not (q.get("fonte") or {}).get("gabarito_url", "").startswith("https://"):
             erros.append(f"{onde}: fonte.gabarito_url ausente")
+        expl = q.get("explicacao") or ""
+        certo_errado = letras == ["C", "E"]
+        inicio = {"C": "Certo.", "E": "Errado."}.get(q.get("gabarito")) if certo_errado else f"{q.get('gabarito')}."
+        if expl and not expl.startswith(inicio):
+            erros.append(f"{onde}: explicação não começa pelo gabarito ({inicio})")
         if q.get("anulada"):
             erros.append(f"{onde}: questão anulada não entra no banco")
 

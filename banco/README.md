@@ -16,6 +16,10 @@ sem novo deploy. Antes de cada commit, rode `python3 banco/validar.py`.
 - Questão que depende de figura ou tabela em imagem fica de fora por enquanto.
 - Questão com texto de apoio leva o texto em `texto_base`.
 - O texto é transcrito fiel à prova (só se corrige quebra de linha e hifenização do PDF).
+- Toda questão leva `explicacao`, escrita pela EnfNews (nunca copiada de site de questões):
+  começa pelo gabarito ("C." ou "Certo."/"Errado.") e diz por que ele está certo, citando a
+  norma ou o protocolo quando houver. Se não der para explicar com segurança com a norma
+  vigente, a questão não entra.
 
 ## Formato
 
@@ -41,6 +45,7 @@ sem novo deploy. Antes de cada commit, rode `python3 banco/validar.py`.
       "dificuldade": "medio",           // facil | medio | dificil
       "criterios": { "raciocinio": 1, "conhecimento": 1, "distratores": 0 },
       "motivo_dificuldade": "Aplica a regra de três a um caso, sem conversão de unidade.",
+      "explicacao": "C. 500 mg em 10 mL dão 50 mg/mL; para 150 mg, aspira-se 3 mL.",
       "fonte": {
         "prova_url": "https://…",
         "gabarito_url": "https://…",
