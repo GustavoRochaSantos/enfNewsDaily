@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "atualizado_em": "2026-10-23T10:49:24-03:00",
+  "atualizado_em": "2026-10-23T10:58:18-03:00",
   "perfil": {
     "nome": "EnfNews",
     "instagram": "https://www.instagram.com/enf.news.daily/",
@@ -22,6 +22,31 @@
       "destaque": false,
       "ativo": true,
       "clicks": 0
+    },
+    {
+      "id": "2026-10-23-sex-concurso-porto-velho-ro",
+      "tipo": "concurso",
+      "titulo": "Porto Velho: 95 vagas imediatas",
+      "subtitulo": "Concurso da Saúde: 43 vagas imediatas para técnico de enfermagem e 52 para enfermeiro, mais cadastro reserva. Inscrições até 11/11.",
+      "chamada": "Concurso da semana · Porto Velho (RO)",
+      "editoria": "Concursos",
+      "data": "2026-10-23",
+      "capa": "https://raw.githubusercontent.com/GustavoRochaSantos/enfNewsDaily/main/posts/2026-10-23-sex-concurso-porto-velho-ro/01.jpg",
+      "instagram": "https://www.instagram.com/p/De1t_Y-oADg/",
+      "reel": null,
+      "url": "https://www.instagram.com/p/De1t_Y-oADg/",
+      "destaque": false,
+      "ativo": true,
+      "clicks": 0,
+      "concurso": {
+        "edital": "https://novo.ibgpconcursos.com.br/concurso.jsp?cod=790",
+        "edital_rotulo": "Página oficial do Concurso da Saúde de Porto Velho (IBGP): edital e inscrição",
+        "inscricoes_ate": "2026-11-11T16:00:00-03:00",
+        "orgao": "Prefeitura de Porto Velho",
+        "uf": "RO",
+        "banca": "IBGP",
+        "vagas": "95"
+      }
     },
     {
       "id": "2026-10-22-qui-rcp-adulto",
