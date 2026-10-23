@@ -292,7 +292,6 @@ function Resultado({ prova, banco, onNovo }) {
               </p>
               {q.explicacao && <p>{semGabarito(q.explicacao)}</p>}
             </div>
-            {q.motivo_dificuldade && <p className="s-motivo">Por que é {ROTULO_NIVEL[q.dificuldade].toLowerCase()}: {q.motivo_dificuldade}</p>}
             <p className="s-fonte">
               {rotuloFonte(q)} ·{" "}
               <a href={q.fonte.prova_url} target="_blank" rel="noopener">prova</a>
