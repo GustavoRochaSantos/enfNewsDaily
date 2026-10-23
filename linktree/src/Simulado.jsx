@@ -125,13 +125,15 @@ function Apresentacao({ banco, onComecar }) {
       <section className="s-cartao" id="montar">
         <h2 className="s-subtitulo">Monte sua prova</h2>
 
-        <label className="s-campo">
-          <span>Cargo</span>
-          <select value={cargo} onChange={(e) => { setCargo(e.target.value); setAssunto(""); }}>
-            <option value="">Enfermeiro e Técnico</option>
-            {Object.entries(CARGOS).map(([id, nome]) => <option key={id} value={id}>{nome}</option>)}
-          </select>
-        </label>
+        <div className="s-campo">
+          <span id="rot-cargo">Cargo</span>
+          <Seletor
+            rotulo="rot-cargo"
+            valor={cargo}
+            onMudar={(v) => { setCargo(v); setAssunto(""); }}
+            opcoes={[{ valor: "", texto: "Enfermeiro e Técnico" }, ...Object.entries(CARGOS).map(([id, nome]) => ({ valor: id, texto: nome }))]}
+          />
+        </div>
 
         <div className="s-campo">
           <span>Número de questões</span>
@@ -145,13 +147,15 @@ function Apresentacao({ banco, onComecar }) {
           </small>
         </div>
 
-        <label className="s-campo">
-          <span>Assunto</span>
-          <select value={assunto} onChange={(e) => setAssunto(e.target.value)}>
-            <option value="">Todos os assuntos</option>
-            {lista.map(([a, n]) => <option key={a} value={a}>{a} ({n})</option>)}
-          </select>
-        </label>
+        <div className="s-campo">
+          <span id="rot-assunto">Assunto</span>
+          <Seletor
+            rotulo="rot-assunto"
+            valor={assunto}
+            onMudar={setAssunto}
+            opcoes={[{ valor: "", texto: "Todos os assuntos" }, ...lista.map(([a, n]) => ({ valor: a, texto: a, conta: n }))]}
+          />
+        </div>
 
         <button className="s-botao largo" disabled={!disponiveis} onClick={iniciar}>
           Iniciar simulado
@@ -284,6 +288,87 @@ function Questao({ q, n, total, marcada, onMarcar, entrada }) {
       </ol>
       <p className="s-fonte">{rotuloFonte(q)}</p>
     </article>
+  );
+}
+
+// Select próprio (o nativo destoa do visual): lista com teclado, busca por letra e clique fora fecha
+function Seletor({ rotulo, valor, opcoes, onMudar }) {
+  const [aberto, setAberto] = useState(false);
+  const [foco, setFoco] = useState(0);
+  const caixa = useRef(null);
+  const lista = useRef(null);
+  const busca = useRef({ texto: "", ate: 0 });
+  const escolhida = Math.max(0, opcoes.findIndex((o) => o.valor === valor));
+  const id = `${rotulo}-lista`;
+
+  useEffect(() => {
+    if (!aberto) return;
+    const fora = (e) => caixa.current && !caixa.current.contains(e.target) && setAberto(false);
+    document.addEventListener("pointerdown", fora);
+    return () => document.removeEventListener("pointerdown", fora);
+  }, [aberto]);
+  useEffect(() => {
+    if (aberto) lista.current?.children[foco]?.scrollIntoView({ block: "nearest" });
+  }, [aberto, foco]);
+
+  const abrir = () => { setFoco(escolhida); setAberto(true); };
+  const escolher = (i) => { onMudar(opcoes[i].valor); setAberto(false); };
+  const tecla = (e) => {
+    const ultimo = opcoes.length - 1;
+    const mover = (i) => { e.preventDefault(); aberto ? setFoco(i) : abrir(); };
+    if (e.key === "ArrowDown") mover(Math.min(ultimo, foco + 1));
+    else if (e.key === "ArrowUp") mover(Math.max(0, foco - 1));
+    else if (e.key === "Home" && aberto) mover(0);
+    else if (e.key === "End" && aberto) mover(ultimo);
+    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); aberto ? escolher(foco) : abrir(); }
+    else if (e.key === "Escape" || e.key === "Tab") setAberto(false);
+    else if (e.key.length === 1) {
+      const agora = Date.now();
+      const b = busca.current;
+      b.texto = (agora < b.ate ? b.texto : "") + e.key.toLowerCase();
+      b.ate = agora + 700;
+      const i = opcoes.findIndex((o) => o.texto.toLowerCase().startsWith(b.texto));
+      if (i >= 0) aberto ? setFoco(i) : onMudar(opcoes[i].valor);
+    }
+  };
+
+  return (
+    <div className={`s-seletor${aberto ? " aberto" : ""}`} ref={caixa}>
+      <button
+        type="button"
+        className="s-seletor-botao"
+        role="combobox"
+        aria-haspopup="listbox"
+        aria-expanded={aberto}
+        aria-controls={id}
+        aria-labelledby={rotulo}
+        aria-activedescendant={aberto ? `${id}-${foco}` : undefined}
+        onClick={() => (aberto ? setAberto(false) : abrir())}
+        onKeyDown={tecla}
+      >
+        <span>{opcoes[escolhida]?.texto}</span>
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 7.5l5 5 5-5" /></svg>
+      </button>
+      {aberto && (
+        <ul className="s-seletor-lista" role="listbox" id={id} aria-labelledby={rotulo} ref={lista}>
+          {opcoes.map((o, i) => (
+            <li
+              key={o.valor || "todos"}
+              id={`${id}-${i}`}
+              role="option"
+              aria-selected={i === escolhida}
+              className={i === foco ? "foco" : undefined}
+              onPointerEnter={() => setFoco(i)}
+              onClick={() => escolher(i)}
+            >
+              <span className="s-seletor-marca" aria-hidden="true">{i === escolhida ? "✓" : ""}</span>
+              <span className="s-seletor-texto">{o.texto}</span>
+              {o.conta != null && <span className="s-seletor-conta">{o.conta}</span>}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
