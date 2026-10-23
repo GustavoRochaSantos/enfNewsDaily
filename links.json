@@ -1,6 +1,6 @@
 {
   "versao": 1,
-  "atualizado_em": "2026-10-23T10:48:42-03:00",
+  "atualizado_em": "2026-10-23T10:49:24-03:00",
   "perfil": {
     "nome": "EnfNews",
     "instagram": "https://www.instagram.com/enf.news.daily/",
@@ -17,7 +17,7 @@
       "data": "2026-10-23",
       "capa": "https://raw.githubusercontent.com/GustavoRochaSantos/enfNewsDaily/main/posts/2026-10-23-sex-higiene-das-maos-5-momentos/01.jpg",
       "instagram": "https://www.instagram.com/p/De1s4lyIL0R/",
-      "reel": null,
+      "reel": "https://www.instagram.com/reel/De1s76ejCTS/",
       "url": "https://www.instagram.com/p/De1s4lyIL0R/",
       "destaque": false,
       "ativo": true,
