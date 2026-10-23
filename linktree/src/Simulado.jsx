@@ -306,19 +306,14 @@ function Prova({ prova, setProva, onEntregar, onSair }) {
   const ir = (i) => setProva({ ...prova, atual: i });
   const marcar = (letra) => setProva({ ...prova, respostas: { ...respostas, [q.id]: letra } });
 
-  const sair = () => {
-    if (window.confirm("Sair deste simulado? As respostas dele serão apagadas.")) onSair();
-  };
-  const entregar = () => {
-    const faltam = questoes.length - respondidas;
-    if (faltam && !window.confirm(`Ainda faltam ${faltam} questões. Entregar mesmo assim?`)) return;
-    onEntregar();
-  };
+  const [pergunta, setPergunta] = useState(null);
+  const faltam = questoes.length - respondidas;
+  const entregar = () => (faltam ? setPergunta("entregar") : onEntregar());
 
   return (
     <div className="s-prova">
       <div className="s-barra">
-        <button className="s-sair" onClick={sair}>Sair</button>
+        <button className="s-botao pequeno contorno" onClick={() => setPergunta("desistir")}>Desistir</button>
         <span>{respondidas}/{questoes.length} respondidas</span>
         <span className="s-relogio">{tempo(Math.floor((agora - inicio) / 1000))}</span>
         <button className="s-botao pequeno" onClick={entregar}>Entregar</button>
@@ -337,6 +332,51 @@ function Prova({ prova, setProva, onEntregar, onSair }) {
             {i + 1}
           </button>
         ))}
+      </div>
+      {pergunta === "desistir" && (
+        <Confirmar
+          titulo="Desistir da prova?"
+          texto={`Você respondeu ${respondidas} de ${questoes.length} questões. Se desistir, essas respostas são apagadas e você volta para o início do simulado.`}
+          sim="Desistir"
+          nao="Continuar a prova"
+          perigo
+          onSim={onSair}
+          onNao={() => setPergunta(null)}
+        />
+      )}
+      {pergunta === "entregar" && (
+        <Confirmar
+          titulo="Entregar a prova?"
+          texto={`Ainda ${faltam === 1 ? "falta 1 questão" : `faltam ${faltam} questões`}. As que ficarem em branco contam como erro.`}
+          sim="Entregar assim mesmo"
+          nao="Voltar à prova"
+          onSim={onEntregar}
+          onNao={() => setPergunta(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+function Confirmar({ titulo, texto, sim, nao, perigo, onSim, onNao }) {
+  const ficar = useRef(null);
+  const fechar = useRef(onNao);
+  fechar.current = onNao;
+  useEffect(() => {
+    ficar.current?.focus();
+    const esc = (e) => e.key === "Escape" && fechar.current();
+    window.addEventListener("keydown", esc);
+    return () => window.removeEventListener("keydown", esc);
+  }, []);
+  return (
+    <div className="s-fundo" onClick={onNao}>
+      <div className="s-dialogo" role="alertdialog" aria-modal="true" aria-labelledby="s-dialogo-titulo" onClick={(e) => e.stopPropagation()}>
+        <h2 id="s-dialogo-titulo">{titulo}</h2>
+        <p>{texto}</p>
+        <div className="s-dialogo-botoes">
+          <button ref={ficar} className="s-botao" onClick={onNao}>{nao}</button>
+          <button className={`s-botao contorno${perigo ? " perigo" : ""}`} onClick={onSim}>{sim}</button>
+        </div>
       </div>
     </div>
   );
